@@ -1,6 +1,7 @@
 TODO.txt
 
-
+Cache site paths in object
+Learn more about node-inspector
 
 
 APP FLOW

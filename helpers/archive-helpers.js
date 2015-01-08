@@ -15,6 +15,12 @@ exports.paths = {
   'list' : path.join(__dirname, '../archives/sites.txt')
 };
 
+exports.staticFiles = {
+  '/' : path.join(__dirname, '../web/public/index.html'),
+  '/styles.css' : path.join(__dirname, '../web/public/styles.css'),
+  '/loading.html' : path.join(__dirname, '../web/public/loading.html')
+};
+
 // Used for stubbing paths for jasmine tests, do not modify
 exports.initialize = function(pathsObj){
   _.each(pathsObj, function(path, type) {

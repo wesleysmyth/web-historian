@@ -4,16 +4,19 @@ var helpers = require("./http-helpers.js");
 // require more modules/folders here!
 
 exports.handleRequest = function (req, res) {
-  if (req.url === '/' || req.url === '/index.html') {
-    var filePath = archive.paths.siteAssets + '/index.html';
-    helpers.serveAssets(res, filePath, function(err, data) {
-      if (err) {
-        throw err;
-      }
-      res.writeHead(200, helpers.headers);
-      res.write(data);
-      res.end();
-    });
+  if (req.method === 'GET') {
+    if (archive.staticFiles.hasOwnProperty(req.url)) {
+      var filePath = archive.staticFiles[req.url];
+    }
+      helpers.serveAssets(res, filePath, function(err, data) {
+        var statusCode = 200;
+        if (err) {
+          statusCode = 404;
+        }
+        res.writeHead(statusCode, helpers.headers);
+        res.write(data);
+        res.end();
+      });
   }
 };
 
