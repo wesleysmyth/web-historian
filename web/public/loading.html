@@ -2,11 +2,26 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="styles.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
 <body>
   <form method="POST">
     <input type="input" name="url"></input>
   </form>
   Our robots are currently archiving the site you requested. Please check back soon for a freshly embalmed copy!
+  <script>
+    $(function(){
+      function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+      var site = getParameterByName('site');
+      setTimeout(function(){
+        window.location.pathname = '/' + site;
+      }, 3000);
+    });
+  </script>
 </body>
 </html>

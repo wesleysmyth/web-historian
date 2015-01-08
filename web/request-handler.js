@@ -12,14 +12,10 @@ exports.handleRequest = function (req, res) {
     if (archive.staticFiles.hasOwnProperty(urlParts.pathname)) {
       var filePath = archive.staticFiles[urlParts.pathname];
       helpers.serveAssets(res, filePath, function(err, data) {
-        var statusCode = 200;
-        if (err) {
-          statusCode = 404;
-        }
-        res.writeHead(statusCode, helpers.headers);
-        res.write(data);
-        res.end();
+        if (err) { throw err; }
+        helpers.respond(res, 200, data);
       });
+
     } else {
       // read the sites.txt file to determine if urlParts.pathname exists in file
       fs.readFile(archive.paths.list, function(err, data) {
@@ -32,25 +28,21 @@ exports.handleRequest = function (req, res) {
           helpers.serveAssets(res, filePath, function(err, data) {
             if (err) {
               // NO: send a 302 to loading.html
-              var statusCode = 302;
-              var queryUrl = url.format({pathname: '/loading.html', query: {site: urlParts.pathname.slice(1)}});
-              helpers.headers.Location = queryUrl;
-              res.writeHead(statusCode, helpers.headers);
-              delete helpers.headers.Location;
-              res.end();
+              var queryUrl = url.format({
+                pathname: '/loading.html',
+                query: {site: urlParts.pathname.slice(1)}
+              });
+
+              helpers.respond(res, 302, '', {Location: queryUrl});
+
             } else {
               // YES: serve the site
-              var statusCode = 200;
-              res.writeHead(statusCode, helpers.headers);
-              res.write(data);
-              res.end();
+              helpers.respond(res, 200, data);
             }
           });
         } else {
           // NO: send a 404, site not found
-          var statusCode = 404;
-          res.writeHead(statusCode, helpers.headers);
-          res.end('Not found');
+          helpers.respond(res, 404, 'Not Found');
         }
       });
       }
@@ -58,27 +50,25 @@ exports.handleRequest = function (req, res) {
       fs.readFile(archive.paths.list, function(err, data) {
         var sites = data.toString('utf-8').split('\n');
         var body = '';
-        var siteUrl;
-        var statusCode = 302;
+
         req.on('data', function(data) {
           body += data;
         });
 
         req.on('end', function() {
-          siteUrl = qs.parse(body).url;
+          var siteUrl = qs.parse(body).url;
           if (sites.indexOf(siteUrl) === -1) {
             fs.appendFile(archive.paths.list, siteUrl + '\n', function(err) {
-              console.log('hit me');
-              if (err) {
-                throw err;
-              }
+              if (err) { throw err; }
             });
           }
-          var queryUrl = url.format({pathname: '/loading.html', query: {site: siteUrl}});
-          helpers.headers.Location = queryUrl;
-          res.writeHead(statusCode, helpers.headers);
-          delete helpers.headers.Location;
-          res.end();
+
+          var queryUrl = url.format({
+            pathname: '/loading.html',
+            query: {site: siteUrl}
+          });
+
+          helpers.respond(res, 302, '', {Location: queryUrl});
         });
 
       });
