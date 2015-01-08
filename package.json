@@ -4,7 +4,9 @@
   "main": "web/basic-server.js",
   "author": "Hack Reactor",
   "license": "Copyright 2014, Hack Reactor. All rights reserved.",
-  "dependencies": {},
+  "dependencies": {
+    "http-request": "^0.7.0"
+  },
   "devDependencies": {
     "chai": "^1.9.0",
     "cron": "^1.0.3",
@@ -15,6 +17,6 @@
   },
   "scripts": {
     "test": "node ./web/basic-server.js & mocha test/test.js; RES=$?; kill %1; exit $RES",
-    "start": "node ./web/basic-server.js"
+    "start": "nodemon ./web/basic-server.js"
   }
 }

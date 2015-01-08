@@ -1,0 +1,17 @@
+TODO.txt
+
+
+
+
+APP FLOW
+  1. GET '/'
+    serve index.html
+  2. POST site to store
+    Include site to store into sites.txt
+    When the site is stored: Send user a redirect (302) to loading.html
+  3. GET archived site
+    Does the archived site exist in sites.txt?
+      YES: Does the archived site exist in our archives/sites/ dir?
+        YES: Return the archive site HTML file
+        NO : Return 202 until better Status Code found ***
+      NO: Return 404
