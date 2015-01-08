@@ -2,6 +2,7 @@ TODO.txt
 
 Cache site paths in object
 Learn more about node-inspector
+302 redirect to loading
 
 
 APP FLOW

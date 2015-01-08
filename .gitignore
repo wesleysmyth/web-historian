@@ -1,5 +1,6 @@
 archives/*
 archives/*.txt
+bower_components/
 
 ###OSX###
 

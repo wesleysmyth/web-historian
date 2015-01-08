@@ -1,5 +1,6 @@
 var path = require('path');
 var fs = require('fs');
+var qs = require('querystring');
 var archive = require('../helpers/archive-helpers');
 var helpers = require("./http-helpers.js");
 // require more modules/folders here!
@@ -49,8 +50,33 @@ exports.handleRequest = function (req, res) {
           res.end('Not found');
         }
       });
+      }
+    }else if (req.method === 'POST') {
+      fs.readFile(archive.paths.list, function(err, data) {
+        var sites = data.toString('utf-8').split('\n');
+        var body = '';
+        var siteUrl;
+        var statusCode = 302;
+        req.on('data', function(data) {
+          body += data;
+        });
+        req.on('end', function() {
+          siteUrl = qs.parse(body).url;
+          if (sites.indexOf(siteUrl) === -1) {
+            fs.appendFile(archive.paths.list, siteUrl + '\n', function(err) {
+              console.log('hit me');
+              if (err) {
+                throw err;
+              }
+            });
+          }
+        });
+        helpers.headers.Location = '/loading.html';
+        res.writeHead(statusCode, helpers.headers);
+        delete helpers.headers.Location;
+        res.end();
+      });
     }
-  }
 };
 
 // exports.handlePostRequest = function (req, res) {
