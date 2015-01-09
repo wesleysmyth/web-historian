@@ -6,9 +6,8 @@ var archive = require('../helpers/archive-helpers');
 var helpers = require("./http-helpers.js");
 // require more modules/folders here!
 
-exports.handleRequest = function (req, res) {
-  var urlParts = url.parse(req.url, true, true);
-  if (req.method === 'GET') {
+var actions = {
+  'GET': function(req, res, urlParts) {
     if (archive.staticFiles.hasOwnProperty(urlParts.pathname)) {
       var filePath = archive.staticFiles[urlParts.pathname];
       helpers.serveAssets(res, filePath, function(err, data) {
@@ -45,9 +44,10 @@ exports.handleRequest = function (req, res) {
           helpers.respond(res, 404, 'Not Found');
         }
       });
-      }
-    }else if (req.method === 'POST') {
-      fs.readFile(archive.paths.list, function(err, data) {
+    }
+  },
+  'POST': function(req, res, urlParts) {
+    fs.readFile(archive.paths.list, function(err, data) {
         var sites = data.toString('utf-8').split('\n');
         var body = '';
 
@@ -72,7 +72,12 @@ exports.handleRequest = function (req, res) {
         });
 
       });
-    }
+  }
+};
+
+exports.handleRequest = function (req, res) {
+  var urlParts = url.parse(req.url, true, true);
+  actions[req.method](req, res, urlParts);
 };
 
 // exports.handlePostRequest = function (req, res) {

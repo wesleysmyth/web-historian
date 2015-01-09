@@ -2,7 +2,6 @@ TODO.txt
 
 Cache site paths in object
 Learn more about node-inspector
-302 redirect to loading
 
 
 APP FLOW
@@ -17,3 +16,5 @@ APP FLOW
         YES: Return the archive site HTML file
         NO : Return 202 until better Status Code found ***
       NO: Return 404
+
+**302 redirect to loading
